@@ -20,6 +20,7 @@ public class SimpleDate {
             System.out.println("Дата после увеличения на 45 дней: " + dateFormat.format(calendar.getTime()));
 
             // начало года
+            calendar.setTime(date);
             calendar.set(Calendar.DAY_OF_YEAR, 1);
             System.out.println("Дата после сдвига на начало года: " + dateFormat.format(calendar.getTime()));
 
@@ -39,14 +40,21 @@ public class SimpleDate {
             Date secondDate = dateFormat.parse(scanner.nextLine());
 
             // рабочие дни между датами
-            calendar.setTime(date);
-            Calendar secondCalendar = Calendar.getInstance();
-            secondCalendar.setTime(secondDate);
+            Calendar startCalendar = Calendar.getInstance();
+            Calendar endCalendar = Calendar.getInstance();
+
+            if (date.before(secondDate)) {
+                startCalendar.setTime(date);
+                endCalendar.setTime(secondDate);
+            } else {
+                startCalendar.setTime(secondDate);
+                endCalendar.setTime(date);
+            }
 
             int workDaysBetween = 0;
-            while (calendar.before(secondCalendar)) {
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            while (startCalendar.before(endCalendar)) {
+                startCalendar.add(Calendar.DAY_OF_YEAR, 1);
+                int dayOfWeek = startCalendar.get(Calendar.DAY_OF_WEEK);
                 if (dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
                     workDaysBetween++;
                 }
