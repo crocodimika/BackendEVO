@@ -45,8 +45,3 @@ public class MessageController {
         }
     }
 
-    @DeleteMapping("/message/{id}")
-    public void deleteMessage(@PathVariable int id) {
-        repository.deleteById(id);
-    }
-}
