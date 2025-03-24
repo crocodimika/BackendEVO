@@ -7,10 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class WeatherApplication {
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+
     public static void main(String[] args) {
         SpringApplication.run(WeatherApplication.class, args);
     }
