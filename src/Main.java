@@ -26,7 +26,7 @@ public class Main {
             }
 
             if (count > 1) {
-                System.out.println("Число '" + nums[i] + "' встречается " + count + " раза.");
+                System.out.println("Число '" + nums[i] + "' встречается " + count + " раза");
             }
 
             checked[nums[i]] = true;
