@@ -1,5 +1,6 @@
 package org.example.weather.controller;
 
+import org.example.weather.model.Main;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.example.weather.model.Root;
@@ -27,10 +28,10 @@ public class WeatherController {
 
     @GetMapping("/weather")
     @Cacheable(value = "weather", key = "#latitude + ',' + #longitude")
-    public Root getWeather(@RequestParam("lat") double latitude,
+    public Main getWeather(@RequestParam("lat") double latitude,
                            @RequestParam("lon") double longitude) {
         String url = String.format("%s?lat=%f&lon=%f&appid=%s&units=metric",
                 apiUrl, latitude, longitude, apiKey);
-        return restTemplate.getForObject(url, Root.class);
+        return restTemplate.getForObject(url, Root.class).getMain();
     }
 }

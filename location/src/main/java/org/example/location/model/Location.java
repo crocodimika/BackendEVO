@@ -15,15 +15,11 @@ import lombok.NonNull;
 @NoArgsConstructor
 
 public class Location {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
 
-    @NonNull
-    private String cityName;
-
+    @NonNull private String cityName;
     @NonNull private double latitude;
-
     @NonNull private double longitude;
 
     public Location(@NonNull String cityName, @NonNull double latitude, @NonNull double longitude){
