@@ -71,7 +71,7 @@ public class LocationController {
         if (location.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s",
+        String url = String.format("http://weather/weather?lat=%s&lon=%s",
                 location.get().getLatitude(),
                 location.get().getLongitude());
         Weather weather = restTemplate.getForObject(url, Weather.class);

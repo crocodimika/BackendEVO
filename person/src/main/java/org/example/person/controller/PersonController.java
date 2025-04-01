@@ -1,6 +1,7 @@
 package org.example.person.controller;
 
 import org.example.person.model.Person;
+import org.example.person.model.Weather;
 import org.example.person.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,7 @@ public class PersonController {
 
     @Autowired
     private PersonRepository repository;
-
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String LOCATION_SERVICE_URL = "http://localhost:8082/locations/city/";
-    private static final String WEATHER_SERVICE_URL = "http://localhost:8083/weather?lat=%f&lon=%f";
 
 
     @GetMapping
@@ -28,30 +26,18 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable int id) {
-        Optional<Person> person = repository.findById(id);
-        if (person.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public Optional<Person> findById(@PathVariable int id) {
+        return repository.findById(id);
+    }
+
+    @GetMapping("{id}/weather")
+    public ResponseEntity<Weather> getWeather(@PathVariable int id) {
+        if (repository.existsById(id)) {
+            String location = repository.findById(id).get().getLocation();
+            Weather weather = restTemplate.getForObject("http://localhost:8083/location/weather?name=" + location, Weather.class);
+            return new ResponseEntity(weather, HttpStatus.OK);
         }
-
-        String cityName = person.get().getLocation();
-        ResponseEntity<LocationResponse> locationResponse = restTemplate.getForEntity(
-                LOCATION_SERVICE_URL + cityName, LocationResponse.class);
-
-        if (!locationResponse.getStatusCode().is2xxSuccessful() || locationResponse.getBody() == null) {
-            return ResponseEntity.badRequest().body("Не удалось найти координаты для города " + cityName);
-        }
-
-        double latitude = locationResponse.getBody().latitude;
-        double longitude = locationResponse.getBody().longitude;
-
-        ResponseEntity<String> weatherResponse = restTemplate.getForEntity(
-                String.format(WEATHER_SERVICE_URL, latitude, longitude).replace(',', '.'), String.class);
-
-
-        return weatherResponse.getStatusCode().is2xxSuccessful()
-                ? ResponseEntity.ok(weatherResponse.getBody())
-                : ResponseEntity.badRequest().body("Ошибка при получении погоды");
+        return new ResponseEntity(null, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
@@ -61,8 +47,20 @@ public class PersonController {
                 : new ResponseEntity(repository.save(person), HttpStatus.CREATED);
     }
 
-    private static class LocationResponse {
-        public double latitude;
-        public double longitude;
+    @DeleteMapping("/{id}")
+    public void deletePerson(@PathVariable int id) {
+        repository.deleteById(id);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> updatePerson(@PathVariable int id, @RequestBody Person person) {
+        if (repository.existsById(id)) {
+            person.setId(id);
+            repository.save(person);
+            return new ResponseEntity<>(person, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(repository.save(person), HttpStatus.CREATED);
+        }
+    }
+
 }
