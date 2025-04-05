@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface LocationRepository extends CrudRepository<Location, Long> {
-    Optional<Location> findByCityNameIgnoreCase(String cityName);
+    Optional<Location> findByNameIgnoreCase(String name);
 }
