@@ -13,6 +13,13 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Task19</name>
     <description>Task19</description>
+
+    <modules>
+        <module>location</module>
+        <module>weather</module>
+        <module>person</module>
+    </modules>
+
     <url/>
     <licenses>
         <license/>
