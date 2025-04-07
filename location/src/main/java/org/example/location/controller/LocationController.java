@@ -28,14 +28,14 @@ public class LocationController {
 
     @GetMapping(params = "name")
     public ResponseEntity<Location> findByName(@RequestParam String name) {
-        return repository.findByCityNameIgnoreCase(name)
+        return repository.findByNameIgnoreCase(name)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Location> save(@RequestBody Location location) {
-        if (repository.findByCityNameIgnoreCase(location.getCityName()).isPresent()) {
+        if (repository.findByNameIgnoreCase(location.getName()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
         Location savedLocation = repository.save(location);
@@ -44,7 +44,7 @@ public class LocationController {
 
     @PutMapping(params = "name")
     public ResponseEntity<Location> update(@RequestParam String name, @RequestBody Location updatedLocation) {
-        Optional<Location> existingLocation = repository.findByCityNameIgnoreCase(name);
+        Optional<Location> existingLocation = repository.findByNameIgnoreCase(name);
         if (existingLocation.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -57,7 +57,7 @@ public class LocationController {
 
     @DeleteMapping(params = "name")
     public ResponseEntity<Void> delete(@RequestParam String name) {
-        Optional<Location> existingLocation = repository.findByCityNameIgnoreCase(name);
+        Optional<Location> existingLocation = repository.findByNameIgnoreCase(name);
         if (existingLocation.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -67,7 +67,7 @@ public class LocationController {
 
     @GetMapping("/weather")
     public ResponseEntity<Weather> getWeather(@RequestParam String name) {
-        Optional<Location> location = repository.findByCityNameIgnoreCase(name);
+        Optional<Location> location = repository.findByNameIgnoreCase(name);
         if (location.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

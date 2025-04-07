@@ -18,12 +18,12 @@ public class Location {
     @Id @GeneratedValue
     private Long id;
 
-    @NonNull private String cityName;
+    @NonNull private String name;
     @NonNull private double latitude;
     @NonNull private double longitude;
 
-    public Location(@NonNull String cityName, @NonNull double latitude, @NonNull double longitude){
-        this.cityName = cityName;
+    public Location(@NonNull String name, @NonNull double latitude, @NonNull double longitude){
+        this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
